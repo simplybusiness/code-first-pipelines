@@ -1,0 +1,5 @@
+{
+    "pipeline_name": "",
+    "pipeline_slug": "{{ cookiecutter.pipeline_name.lower().replace(' ', '_') }}",
+    "project_description": ""
+}
