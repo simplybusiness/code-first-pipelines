@@ -6,28 +6,57 @@ A framework built on top of [Ploomber](https://ploomber.io/) that allows code-fi
 
 ## Installation
 
-TBA
+To get the minimum code needed to use the pipelines, install it from PyPI:
+
+```shell
+pip install code-first-pipelines
+```
 
 ## Usage
+
+### Pipelines
+
+```python
+import pandas as pd
+from sklearn import datasets
+from cf_pipelines import Pipeline
+
+iris_pipeline = Pipeline("My Cool Pipeline")
+
+@iris_pipeline.step("Data ingestion")
+def data_ingestion():
+    d = datasets.load_iris()
+    df = pd.DataFrame(d["data"])
+    df.columns = d["feature_names"]
+    df["target"] = d["target"]
+    return {"raw_data.csv": df}
+
+iris_pipeline.run()
+```
+
+See the [tutorial notebook](tutorials/Introduction%20to%20Pipelines.ipynb) for a more comprehensive example.
 
 ### ML Pipelines
 
 ```python
 import pandas as pd
+from sklearn import datasets
 from cf_pipelines.ml import MLPipeline
 
-my_pipeline = MLPipeline("My Cool Pipeline")
+iris_pipeline = MLPipeline("My Cool Pipeline")
 
-@my_pipeline.data_ingestion
+@iris_pipeline.data_ingestion
 def data_ingestion():
-    input_data = pd.read_csv('input_data.csv')
-    adult_data = input_data[input_data['age'] > 18]
-    return {'adult_data.csv':adult_data}
+    d = datasets.load_iris()
+    df = pd.DataFrame(d["data"])
+    df.columns = d["feature_names"]
+    df["target"] = d["target"]
+    return {"raw_data.csv": df}
 
-my_pipeline.run()
+iris_pipeline.run()
 ```
 
-See the [tutorial notebook](tutorials/Machine%20Learning%20Pipelines.ipynb) for a more comprehensive example.
+See the [tutorial notebook](tutorials/Introduction%20to%20ML%20Pipelines.ipynb) for a more comprehensive example.
 
 ## Getting started with a template 
 
