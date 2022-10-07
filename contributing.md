@@ -1,5 +1,10 @@
 ## Development
 
+### Releasing
+
+We release from the `main` branch by issuing a bump commit including tags noting the version to be released. 
+This is done via the `make release-major`, `make release-minor` and `make release-patch` followed by `git push --follow-tags`.
+
 ### Extra dependencies
 
 This project depends on Graphviz being installed in your system, follow the instructions [here](https://graphviz.org/download/).
