@@ -18,6 +18,9 @@ dist/
 .coverage.*
 htmlcov
 
+# OS
+.DS_Store
+
 # Own
 tutorials/outputs
 tutorials/mlruns

@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - main
+
+jobs:
+  check:
+    name: Code check
+    uses: ./.github/workflows/check-code.yml
+  release:
+    name: Release to PyPI
+    needs: [check]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.8"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install poetry==1.1.13
+        poetry config virtualenvs.create false --local
+        poetry install
+    - name: Release
+      if: startsWith(github.ref, 'refs/tags/')
+      env:
+        PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: |
+        poetry publish -u __token__ -p ${PYPI_PASSWORD} --build
