@@ -9,12 +9,12 @@ from typing import Any, Callable, Dict, List, Optional, Set, Union
 
 from ploomber import DAG
 from ploomber.executors import Serial
+from ploomber.io import serializer_pickle, unserializer_pickle
 from ploomber.products import File
 from ploomber.tasks import PythonCallable
 
 from cf_pipelines.base.helper_classes import FunctionDetails, ProductLineage
 from cf_pipelines.base.utils import get_return_keys_from_function, remove_extension, wrap_preserving_signature
-from cf_pipelines.serializers import file_serializer, file_unserializer
 
 
 class Pipeline:
@@ -61,8 +61,8 @@ class Pipeline:
         self.function_details: Dict[str, FunctionDetails] = {}
         self.extra_arguments = extra_args or dict()
         self.dag_clients = dag_clients or dict()
-        self.serializer = serializer or file_serializer
-        self.unserializer = unserializer or file_unserializer
+        self.serializer = serializer or serializer_pickle
+        self.unserializer = unserializer or unserializer_pickle
         self.track_all = track_all
         self.current_run_id = "default"
         self.before_function: Optional[Callable[[str], None]] = None

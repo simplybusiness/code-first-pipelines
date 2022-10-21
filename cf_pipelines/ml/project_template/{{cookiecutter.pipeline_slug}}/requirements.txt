@@ -1,4 +1,0 @@
-code-first-pipeline
-maptlotlib
-pandas
-scikit-learn

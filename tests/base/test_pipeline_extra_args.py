@@ -1,4 +1,5 @@
 import os
+import pickle
 from unittest.mock import patch
 
 import pytest
@@ -17,7 +18,7 @@ def test_fails_if_when_arg_is_not_passed(parse_indented):
         pipeline.solve_dependencies()
 
 
-def test_passes_args_from_constructor(parse_indented, tmp_path):
+def test_passes_args_from_constructor(parse_indented, tmp_path, read_pickle):
     pipeline = Pipeline("hello", extra_args={"hello": "hola", "world": "mundo"}, location=tmp_path)
 
     @pipeline.step("foo")
@@ -30,11 +31,11 @@ def test_passes_args_from_constructor(parse_indented, tmp_path):
 
     pipeline.run()
 
-    actual_result = open(tmp_path / "default" / "bar" / "result.txt").read()
+    actual_result = read_pickle(tmp_path / "default" / "bar" / "result.txt")
     assert actual_result == "hola mundo"
 
 
-def test_passes_args_from_environment_variables(parse_indented, tmp_path):
+def test_passes_args_from_environment_variables(parse_indented, tmp_path, read_pickle):
     pipeline = Pipeline("hello", location=tmp_path)
 
     @pipeline.step("foo")
@@ -48,11 +49,11 @@ def test_passes_args_from_environment_variables(parse_indented, tmp_path):
     with patch.dict(os.environ, {"CF_HELLO": "hola", "CF_WORLD": "mundo"}):
         pipeline.run()
 
-    actual_result = open(tmp_path / "default" / "bar" / "result.txt").read()
+    actual_result = read_pickle(tmp_path / "default" / "bar" / "result.txt")
     assert actual_result == "hola mundo"
 
 
-def test_assert_argument_precedence(parse_indented, tmp_path):
+def test_assert_argument_precedence(parse_indented, tmp_path, read_pickle):
     pipeline = Pipeline("hello", extra_args={"hello": "hola", "world": "mundo"}, location=tmp_path)
 
     @pipeline.step("foo")
@@ -66,5 +67,5 @@ def test_assert_argument_precedence(parse_indented, tmp_path):
     with patch.dict(os.environ, {"CF_HELLO": "ciao", "CF_WORLD": "mondo"}):
         pipeline.run()
 
-    actual_result = open(tmp_path / "default" / "bar" / "result.txt").read()
+    actual_result = read_pickle(tmp_path / "default" / "bar" / "result.txt")
     assert actual_result == "ciao mondo"
