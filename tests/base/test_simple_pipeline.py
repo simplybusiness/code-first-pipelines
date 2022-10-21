@@ -125,17 +125,14 @@ def textual_pipeline(parse_indented, tmp_path):
     return simple
 
 
-def test_execution(textual_pipeline: Pipeline, tmp_path):
+def test_execution(textual_pipeline: Pipeline, tmp_path, read_pickle):
     textual_pipeline.run()
 
-    with open(tmp_path / "default" / "step_1" / "artifact_1.txt") as r:
-        assert r.read() == "Hello"
+    assert read_pickle(tmp_path / "default" / "step_1" / "artifact_1.txt") == "Hello"
 
-    with open(tmp_path / "default" / "step_2" / "artifact_2.txt") as r:
-        assert r.read() == "World"
+    assert read_pickle(tmp_path / "default" / "step_2" / "artifact_2.txt") == "World"
 
-    with open(tmp_path / "default" / "step_3" / "end.txt") as r:
-        assert r.read() == "Hello World!"
+    assert read_pickle(tmp_path / "default" / "step_3" / "end.txt") == "Hello World!"
 
 
 def test_after_and_before_functions(textual_pipeline: Pipeline, tmp_path):

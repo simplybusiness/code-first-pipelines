@@ -1,7 +1,17 @@
 import ast
+import pickle
 from unittest.mock import patch
 
 import pytest
+
+
+@pytest.fixture
+def read_pickle():
+    def _read(path):
+        with open(path, "rb") as rb:
+            return pickle.load(rb)
+
+    return _read
 
 
 @pytest.fixture
