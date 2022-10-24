@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "code-first-pipelines"
-version = "0.9.0"
+version = "1.0.0"
 description = "A framework built on top of Ploomber that allows code-first definition of pipelines."
 authors = ["Prediction and Learning at Simply Business <pal@simplybusiness.co.uk>"]
 readme = "readme.md"
