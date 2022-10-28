@@ -7,6 +7,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Set, Union
 
+import networkx as nx
 from ploomber import DAG
 from ploomber.executors import Serial
 from ploomber.io import serializer_pickle, unserializer_pickle
@@ -15,6 +16,7 @@ from ploomber.tasks import PythonCallable
 
 from cf_pipelines.base.helper_classes import FunctionDetails, ProductLineage
 from cf_pipelines.base.utils import get_return_keys_from_function, remove_extension, wrap_preserving_signature
+from cf_pipelines.exceptions import CycledPipelineError
 
 
 class Pipeline:
@@ -287,6 +289,16 @@ class Pipeline:
         for function_name, dependencies in solved_dependencies.items():
             for dependency in dependencies:
                 callables[dependency] >> callables[function_name]
+
+        try:
+            # TODO: investigate how reliable is accessing `_G`
+            # TODO: ask for a way to find cycles eagerly without building (executing) the pipeline?
+            cycles = nx.find_cycle(dag._G)
+            raise CycledPipelineError(cycles)
+        except nx.NetworkXNoCycle:
+            # Ironically, this means everything is good! so we just ignore this exception
+            pass
+
         return dag
 
     def generate_run_id(self) -> str:
